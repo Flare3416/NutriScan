@@ -1,10 +1,18 @@
-from ultralytics import YOLO
 from utils.calorie import calculate_calories
 
-# Load trained model
-model = YOLO("best.pt")
+_model = None
+
+
+def _get_model():
+    global _model
+    if _model is None:
+        from ultralytics import YOLO
+
+        _model = YOLO("best.pt")
+    return _model
 
 def detect_food(image_path, conf=0.25, max_det=10):
+    model = _get_model()
     results = model(image_path, conf=conf, max_det=max_det)
 
     detections = []
